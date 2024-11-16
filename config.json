@@ -1,0 +1,7 @@
+{
+    "api": [
+        {
+            "OAI_key": "YOUR_OpenAI_KEY"
+        }
+    ]
+}
