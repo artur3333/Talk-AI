@@ -7,6 +7,7 @@
 - **Voice Input**: Record your voice by holding the `TAB` key.
 - **Speech-to-Text**: Uses OpenAI's Whisper-1 model to transcribe spoken input.
 - **AI Response Generation**: Leverages GPT-4o-mini to create an intelligent and context-aware response.
+- **Chat History**: Remembers chat history for context-aware responses.
 - **Text-to-Speech**: Utilizes OpenAI's TTS-1 model to vocalize the AI's response.
 
 ## Requirements
@@ -62,6 +63,7 @@
 Talk-AI
 ├── main.py                 # Main script to run the application
 ├── config.json             # Configuration file for storing OAI API key
+├── conversation.json       # Stores the conversation history used for generating responses
 ├── ffmpeg.exe              # FFmpeg executable for audio processing (Windows)
 ├── ffprobe.exe             # FFprobe executable for media information (Windows)
 ├── requirements.txt        # List of Python dependencies
