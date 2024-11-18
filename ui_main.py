@@ -10,15 +10,11 @@ from pydub import AudioSegment
 from pathlib import Path
 from openai import OpenAI
 from datetime import datetime
-from colorama import Fore, Back
-from colorama import init
 
-init()
-
-sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1) # Set the standard output to utf-8
+sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
 
-def VariableInitialization(): # Initilize the variables
+def VariableInitialization():
     global OAI_key
     global speak
     global now
@@ -34,7 +30,7 @@ def VariableInitialization(): # Initilize the variables
         OAI_key = data["api"][0]["OAI_key"]
     
     except FileNotFoundError:
-        print(Fore.RED + "config.json file not found.")
+        print("config.json file not found.")
         exit()
 
     conversation = []
@@ -49,7 +45,7 @@ def VariableInitialization(): # Initilize the variables
     LOG_FILE = "conversation_log.txt"
 
 
-def message_with_history(): # Get the message and the history
+def message_with_history():
     global conversation
     global history_conversation
 
@@ -61,7 +57,7 @@ def message_with_history(): # Get the message and the history
             conversation = data.get("history", [])
     
     except FileNotFoundError:
-        print(Fore.RED + "conversation.json file not found.")
+        print("conversation.json file not found.")
     
     for msg in history_conversation["history"][:-1]:
         message.append(msg)
@@ -73,7 +69,7 @@ def message_with_history(): # Get the message and the history
     return message
 
 
-def record_mic(): # Record the microphone
+def record_mic():
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
@@ -89,7 +85,7 @@ def record_mic(): # Record the microphone
         pass
 
     if not message_printed:
-        print(Fore.CYAN + "\nRight Shift key detected, starting recording.")
+        print("\nRight Shift key detected, starting recording.")
         message_printed = True
 
     while keyboard.is_pressed("right shift"):
@@ -108,7 +104,7 @@ def record_mic(): # Record the microphone
     speech_to_text("record.wav")
 
 
-def speech_to_text(file): # Convert speech to text
+def speech_to_text(file):
     global now
     global prev
     client = OpenAI(api_key=OAI_key)
@@ -121,8 +117,7 @@ def speech_to_text(file): # Convert speech to text
             )
 
         now = transcription
-        print(Back.WHITE + Fore.BLACK + "\n> " + now)
-        print(Back.BLACK)
+        print("\n> " + now)
 
     except Exception as e:
         print(e)
@@ -139,15 +134,14 @@ def speech_to_text(file): # Convert speech to text
         log_file.write(log_entry)
 
     responce = text_generator()
-    print(Back.WHITE + Fore.BLACK + responce)
-    print(Back.BLACK)
+    print(responce)
 
     OAI_TTS(responce)
 
     time.sleep(1)
 
 
-def OAI_TTS(message): # OpenAI text to speech
+def OAI_TTS(message):
     global speak
     client = OpenAI(api_key=OAI_key)
     speech_file_path = Path(__file__).parent / "speech.mp3"
@@ -174,13 +168,13 @@ def OAI_TTS(message): # OpenAI text to speech
             speak = False
 
         else:
-            print(Fore.RED + "Error in OAI_TTS: No speech file found or file is empty.")
+            print("Error in OAI_TTS: No speech file found or file is empty.")
 
     except Exception as e:
-        print(Fore.RED + "Error in OAI_TTS: " + str(e))
+        print("Error in OAI_TTS: " + str(e))
 
 
-def text_generator(): # Generate response text
+def text_generator():
     global conversation
     global history_conversation
     global characters
@@ -192,7 +186,7 @@ def text_generator(): # Generate response text
             conversation.pop(2)
             characters = sum(len(d['content']) for d in conversation)
         except Exception as e:
-            print(Fore.RED + "Error in popping older messages: " + str(e))
+            print("Error in popping older messages: " + str(e))
 
     with open("conversation.json", "w", encoding="utf-8") as json_file:
         json.dump(history_conversation, json_file, indent=4)
@@ -231,13 +225,13 @@ def text_generator(): # Generate response text
         return response_text
 
     except Exception as e:
-        print(Fore.RED + e)
+        print(e)
 
 
-def main(): # Main function
+def main():
     VariableInitialization()
-    print(Fore.BLUE + "Initilization complete.\n")
-    print(Fore.GREEN + "Hold 'Right Shift' to record. Release it to stop.")
+    print("Initilization complete.\n")
+    print("Hold 'Right Shift' to record. Release it to stop.")
 
     try:
         while True:
@@ -247,9 +241,9 @@ def main(): # Main function
             time.sleep(1)
 
     except KeyboardInterrupt:
-        print(Fore.RED + "Program terminated by user.")
+        print("Program terminated by user.")
         sys.exit()
 
 
-if __name__ == "__main__": # Run the main function
+if __name__ == "__main__": 
     main()
